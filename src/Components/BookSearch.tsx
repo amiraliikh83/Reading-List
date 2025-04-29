@@ -14,13 +14,17 @@ import {
 export type Book = {
   key: string;
   title: string;
-  author_name: string;
+  author_name: string[];
   first_publish_year: string;
-  number_of_pages_median: string;
+  number_of_pages_median?: string | null;
   status: "done" | "inProgress" | "backlog";
 };
 
-export const BookSearch = () => {
+export const BookSearch = ({
+  onAddBook,
+}: {
+  onAddBook: (Book: Book) => void;
+}) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +97,7 @@ export const BookSearch = () => {
             Showing {startIndex} - {endIndex} out of {totalResults} results
           </p>
         )}
-        </div>
+      </div>
       <div className="mt-4 max-h-64 overflow-auto">
         <Table>
           <TableHeader>
@@ -112,6 +116,23 @@ export const BookSearch = () => {
                 <TableCell>{book.author_name}</TableCell>
                 <TableCell>{book.first_publish_year}</TableCell>
                 <TableCell>{book.number_of_pages_median || "-"}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="link"
+                    onClick={() => {
+                      onAddBook({
+                        key: book.key,
+                        title: book.title,
+                        author_name: book.author_name,
+                        first_publish_year: book.first_publish_year,
+                        number_of_pages_median:
+                          book.number_of_pages_median || null,
+                        status: "backlog",
+                      });
+                    }}>
+                    Add
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
