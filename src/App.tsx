@@ -13,10 +13,8 @@ const App = () => {
 
   const addBook = (newBook: Book) => {
     const updatedBooks: Book[] = [...books, { ...newBook, status: "backlog" }];
-
     setBooks(updatedBooks);
-
-    localStorage.setitem("readingList", JSON.stringify(updatedBooks));
+    localStorage.setItem("readingList", JSON.stringify(updatedBooks));
   };
 
   return (

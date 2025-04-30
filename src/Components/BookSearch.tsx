@@ -10,14 +10,20 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import { response } from "express";
 
 export type Book = {
   key: string;
   title: string;
-  author_name: string[];
-  first_publish_year: string;
-  number_of_pages_median?: string | null;
+  author_name?: string[];
+  first_publish_year?: number;
+  number_of_pages_median?: number | null;
   status: "done" | "inProgress" | "backlog";
+};
+
+type SearchResult = {
+  docs: Book[];
+  numFound: number;
 };
 
 export const BookSearch = ({
@@ -26,16 +32,11 @@ export const BookSearch = ({
   onAddBook: (Book: Book) => void;
 }) => {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalResults, setTotalResults] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 100;
-
-  type SearchResult = {
-    docs: Book[];
-    numFound: number;
-  };
 
   const searchBook = async (page: number = 1) => {
     if (!query) return;
@@ -50,18 +51,18 @@ export const BookSearch = ({
       setTotalResults(response.data.numFound);
       setCurrentPage(page);
     } catch (error) {
-      console.error("Errro Fetching in Api", error);
+      console.error("Error Fetching API", error);
     }
     setIsLoading(false);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter ") {
+    if (event.key === "Enter") {
       searchBook();
     }
   };
 
-  const handlePerviouseClick = () => {
+  const handlePreviousClick = () => {
     if (currentPage > 1) {
       searchBook(currentPage - 1);
     }
@@ -74,62 +75,64 @@ export const BookSearch = ({
   };
 
   const startIndex = (currentPage - 1) * resultsPerPage + 1;
-
   const endIndex = Math.min(startIndex + resultsPerPage - 1, totalResults);
+
 
   return (
     <div className="p-4">
-      <div className="sm:max-w-xs">
+      <div className="sm:max-w-xs mb-2">
         <Input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="search for you next Book!"
+          placeholder="Search for your next Book!"
           onKeyUp={handleKeyPress}
         />
       </div>
-      <Button onClick={(e) => searchBook()} disabled={isLoading}>
-        {isLoading ? "Searching ..." : "Search"}
+      <Button onClick={() => searchBook()} disabled={isLoading}>
+        {isLoading ? "Searching..." : "Search"}
       </Button>
-      <div className="mt-2">
-        {totalResults > 0 && (
-          <p className="text-sum">
+
+      {totalResults > 0 && (
+        <div className="mt-2">
+          <p>
             Showing {startIndex} - {endIndex} out of {totalResults} results
           </p>
-        )}
-      </div>
+        </div>
+      )}
+
       <div className="mt-4 max-h-64 overflow-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="p-2">Title</TableHead>
-              <TableHead className="p-2">Author</TableHead>
-              <TableHead className="p-2">Year</TableHead>
-              <TableHead className="p-2">Page Count</TableHead>
-              <TableHead className="p-2">Invoice</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Author</TableHead>
+              <TableHead>Year</TableHead>
+              <TableHead>Page Count</TableHead>
+              <TableHead>Invoice</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {results.map((book, index) => (
               <TableRow key={index}>
-                <TableCell>{book.title}</TableCell>
-                <TableCell>{book.author_name}</TableCell>
-                <TableCell>{book.first_publish_year}</TableCell>
-                <TableCell>{book.number_of_pages_median || "-"}</TableCell>
+                <TableCell>{book.title || "-"}</TableCell>
+                <TableCell>{book.author_name?.join(", ") || "-"}</TableCell>
+                <TableCell>{book.first_publish_year ?? "-"}</TableCell>
+                <TableCell>{book.number_of_pages_median ?? "-"}</TableCell>
                 <TableCell>
                   <Button
                     variant="link"
-                    onClick={() => {
+                    onClick={() =>
                       onAddBook({
                         key: book.key,
                         title: book.title,
-                        author_name: book.author_name,
-                        first_publish_year: book.first_publish_year,
+                        author_name: book.author_name || [],
+                        first_publish_year: book.first_publish_year ?? 0,
                         number_of_pages_median:
-                          book.number_of_pages_median || null,
+                          book.number_of_pages_median ?? null,
                         status: "backlog",
-                      });
-                    }}>
+                      })
+                    }>
                     Add
                   </Button>
                 </TableCell>
@@ -138,12 +141,15 @@ export const BookSearch = ({
           </TableBody>
         </Table>
       </div>
+
       <div className="mt-4 flex items-center justify-between">
         <Button
           variant="outline"
-          onClick={handlePerviouseClick}
-          disabled={currentPage <= 1 || isLoading}></Button>
-        <span>page {currentPage}</span>
+          onClick={handlePreviousClick}
+          disabled={currentPage <= 1 || isLoading}>
+          Previous
+        </Button>
+        <span>Page {currentPage}</span>
         <Button
           variant="outline"
           onClick={handleNextClick}
