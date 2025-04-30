@@ -77,7 +77,6 @@ export const BookSearch = ({
   const startIndex = (currentPage - 1) * resultsPerPage + 1;
   const endIndex = Math.min(startIndex + resultsPerPage - 1, totalResults);
 
-
   return (
     <div className="p-4">
       <div className="sm:max-w-xs mb-2">
@@ -105,11 +104,12 @@ export const BookSearch = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Author</TableHead>
-              <TableHead>Year</TableHead>
-              <TableHead>Page Count</TableHead>
-              <TableHead>Invoice</TableHead>
+              <TableHead className="p-2">Title</TableHead>
+              <TableHead className="p-2">Author</TableHead>
+              <TableHead className="p-2">Year</TableHead>
+              <TableHead className="p-2">Page Count</TableHead>
+              <TableHead className="p-2">Invoice</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
