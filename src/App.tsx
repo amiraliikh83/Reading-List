@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Book, BookSearch } from "./Components/BookSearch";
 import BookList from "./Components/BookList";
+import { json } from "body-parser";
 
 const App = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -19,13 +20,17 @@ const App = () => {
   };
 
   const moveBook = (bookToMove: Book, newStatus: Book["status"]) => {
-    // const updatedBooks: Book[] = [...books, { ...newBook, status: "backlog" }] 01:05:42;
+    const updatedBooks: Book[] = books.map((book) =>
+      book.key === bookToMove.key ? { ...book, status: newStatus } : book,
+    );
+    setBooks(updatedBooks);
+    localStorage.setItem("readingList", JSON.stringify(updatedBooks));
   };
 
   return (
     <div className="container mx-auto">
       <BookSearch onAddBook={addBook} />
-      <BookList books={books} />
+      <BookList books={books} onMoveBook={moveBook} />
     </div>
   );
 };
