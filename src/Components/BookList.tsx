@@ -1,5 +1,4 @@
 import React from "react";
-import { Book } from "./BookSearch";
 import {
   Card,
   CardDescription,
@@ -8,25 +7,29 @@ import {
   CardTitle,
 } from "./ui/card";
 import { Button } from "./ui/button";
+import { Book, useStore } from "@/store";
 
-const BookList = ({
-  books,
-  onMoveBook,
-}: {
-  books: Book[];
-  onMoveBook: (book: Book, targetList: Book["status"]) => void;
-}) => {
+const BookList = () => {
+  const { books, removeBook, moveBook } = useStore((state) => state);
+
   const moveToList = (book: Book, targetList: Book["status"]) => {
-    onMoveBook(book, targetList);
+    moveBook(book, targetList);
   };
 
-  const renderBookItem = (book: Book, index: number, listType: string) => (
+  const renderBookItem = (
+    book: Book,
+    index: number,
+    listType: Book["status"],
+  ) => (
     <Card key={index}>
       <CardHeader>
         <CardTitle>{book.title}</CardTitle>
         <CardDescription>{book.author_name}</CardDescription>
       </CardHeader>
-      <CardFooter>
+      <CardFooter className="flex justify-between">
+        <Button variant="destructive" onClick={() => removeBook(book)}>
+          Remove
+        </Button>{" "}
         <div className="inline-flex gap-2">
           <Button
             variant="outline"
@@ -64,19 +67,21 @@ const BookList = ({
           </div>
         </>
       )}
-      {books.filter((book) => book.status === "inProgress").length > 0 && (
+
+      {books.filter((book) => book.status === "backlog").length > 0 && (
         <>
-          <h3 className="mb-2 text-xl-font-semibold">backlog</h3>
+          <h3 className="mb-2 text-xl-font-semibold">Backlog</h3>
           <div>
             {books
               .filter((book) => book.status === "backlog")
               .map((book, index) => renderBookItem(book, index, "backlog"))}
           </div>
         </>
-      )}{" "}
-      {books.filter((book) => book.status === "inProgress").length > 0 && (
+      )}
+
+      {books.filter((book) => book.status === "done").length > 0 && (
         <>
-          <h3 className="mb-2 text-xl-font-semibold">done</h3>
+          <h3 className="mb-2 text-xl-font-semibold">Done</h3>
           <div>
             {books
               .filter((book) => book.status === "done")

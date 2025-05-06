@@ -1,36 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Book, BookSearch } from "./Components/BookSearch";
+import { useEffect } from "react";
+import { BookSearch } from "./Components/BookSearch";
 import BookList from "./Components/BookList";
-import { json } from "body-parser";
+
+import { useStore } from "./store";
 
 const App = () => {
-  const [books, setBooks] = useState<Book[]>([]);
+  const { loadBooksFromLocalStorage } = useStore((state) => state);
 
   useEffect(() => {
-    const storedBooks = localStorage.getItem("readingList");
-    if (storedBooks) {
-      setBooks(JSON.parse(storedBooks));
-    }
-  }, []);
-
-  const addBook = (newBook: Book) => {
-    const updatedBooks: Book[] = [...books, { ...newBook, status: "backlog" }];
-    setBooks(updatedBooks);
-    localStorage.setItem("readingList", JSON.stringify(updatedBooks));
-  };
-
-  const moveBook = (bookToMove: Book, newStatus: Book["status"]) => {
-    const updatedBooks: Book[] = books.map((book) =>
-      book.key === bookToMove.key ? { ...book, status: newStatus } : book,
-    );
-    setBooks(updatedBooks);
-    localStorage.setItem("readingList", JSON.stringify(updatedBooks));
-  };
-
+    loadBooksFromLocalStorage();
+  }, [loadBooksFromLocalStorage]);
   return (
     <div className="container mx-auto">
-      <BookSearch onAddBook={addBook} />
-      <BookList books={books} onMoveBook={moveBook} />
+      <BookSearch />
+      <BookList />
     </div>
   );
 };
