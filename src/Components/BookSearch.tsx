@@ -10,10 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-
 import { Book, useStore } from "@/store";
-
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { SlArrowRight, SlArrowLeft } from "react-icons/sl";
 type SearchResult = {
   docs: Book[];
   numFound: number;
@@ -165,30 +164,43 @@ export const BookSearch = () => {
           className="flex w-full flex-col items-center gap-3
         border-t border-gray-200 px-6 py-4 sm:flex-row
         sm:justify-between dark:border-gray-700">
-          {totalResults > 0 && (
-            <p className="text-sm">
-              Showing {startIndex} - {endIndex} out of {totalResults} results
+          <div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {totalResults > 0 ? (
+                <>
+                  Showing{" "}
+                  <span className="font-semibold text-gray-800 dark:text-gray-200">
+                    {startIndex} - {endIndex}
+                  </span>{" "}
+                  out of{" "}
+                  <span className="font-semibold text-gray-800 dark:text-gray-200">
+                    {totalResults}
+                  </span>{" "}
+                  results
+                </>
+              ) : (
+                "0 results"
+              )}
             </p>
-          )}
-        </div>
+          </div>
+          <div className="inline-flex gap-x-2">
+            <Button
+              variant="outline"
+              onClick={handlePreviousClick}
+              disabled={currentPage <= 1 || isLoading}>
+              <SlArrowLeft className="size-4"/>
+            </Button>
 
-        <div className="mt-4 flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={handlePreviousClick}
-            disabled={currentPage <= 1 || isLoading}>
-            Previous
-          </Button>
-          <span>Page {currentPage}</span>
-          <Button
-            variant="outline"
-            onClick={handleNextClick}
-            disabled={
-              currentPage >= Math.ceil(totalResults / resultsPerPage) ||
-              isLoading
-            }>
-            Next
-          </Button>
+            <Button
+              variant="outline"
+              onClick={handleNextClick}
+              disabled={
+                currentPage >= Math.ceil(totalResults / resultsPerPage) ||
+                isLoading
+              }>
+              <SlArrowRight className="size-4"/>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

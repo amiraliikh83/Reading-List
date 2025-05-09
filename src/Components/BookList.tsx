@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardDescription,
@@ -15,6 +14,14 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
+import {
+  GiBookPile,
+  GiBookshelf,
+  GiBookmarklet,
+  GiBurningBook,
+} from "react-icons/gi";
+
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const BookList = () => {
   const { books, removeBook, moveBook, reorderBooks } = useStore(
@@ -30,34 +37,56 @@ const BookList = () => {
     index: number,
     listType: Book["status"],
   ) => (
-    <Card key={index}>
+    <Card
+      key={index}
+      className="rounded-none first:mt-0 first:rounded-t-lg last:rounded-b-lg">
       <CardHeader>
         <CardTitle>{book.title}</CardTitle>
         <CardDescription>{book.author_name}</CardDescription>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        <Button variant="destructive" onClick={() => removeBook(book)}>
-          Remove
-        </Button>{" "}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="destructive" onClick={() => removeBook(book)}>
+              Remove
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Delete from my reading list </TooltipContent>
+        </Tooltip>
         <div className="inline-flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => moveToList(book, "inProgress")}
-            disabled={listType === "inProgress"}>
-            In Progress
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => moveToList(book, "backlog")}
-            disabled={listType === "backlog"}>
-            backlog
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => moveToList(book, "done")}
-            disabled={listType === "done"}>
-            done
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={() => moveToList(book, "inProgress")}
+                disabled={listType === "inProgress"}>
+                In Progress
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Mark as "Currently Reading"</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={() => moveToList(book, "backlog")}
+                disabled={listType === "backlog"}>
+                backlog
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Mark as "For Latar"</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={() => moveToList(book, "done")}
+                disabled={listType === "done"}>
+                done
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Mark as "Done"</TooltipContent>
+          </Tooltip>
         </div>
       </CardFooter>
     </Card>

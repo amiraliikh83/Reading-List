@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { BookSearch } from "./Components/BookSearch";
 import BookList from "./Components/BookList";
-
 import { useStore } from "./store";
 import { Layout } from "./Components/Layout";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 const App = () => {
   const { loadBooksFromLocalStorage } = useStore((state) => state);
@@ -14,7 +14,9 @@ const App = () => {
   return (
     <Layout>
       <BookSearch />
-      <BookList />
+      <TooltipProvider>
+        <BookList />
+      </TooltipProvider>
     </Layout>
   );
 };
