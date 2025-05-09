@@ -48,7 +48,7 @@ const BookList = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="destructive" onClick={() => removeBook(book)}>
-              Remove
+              <GiBurningBook className="size-5" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Delete from my reading list </TooltipContent>
@@ -60,7 +60,7 @@ const BookList = () => {
                 variant="outline"
                 onClick={() => moveToList(book, "inProgress")}
                 disabled={listType === "inProgress"}>
-                In Progress
+                <GiBookmarklet className="size-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Mark as "Currently Reading"</TooltipContent>
@@ -71,7 +71,7 @@ const BookList = () => {
                 variant="outline"
                 onClick={() => moveToList(book, "backlog")}
                 disabled={listType === "backlog"}>
-                backlog
+                <GiBookPile className="size-5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Mark as "For Latar"</TooltipContent>
@@ -82,7 +82,7 @@ const BookList = () => {
                 variant="outline"
                 onClick={() => moveToList(book, "done")}
                 disabled={listType === "done"}>
-                done
+                <GiBookshelf className="size-5 pb-0.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Mark as "Done"</TooltipContent>
@@ -142,20 +142,29 @@ const BookList = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         {books.filter((book) => book.status === "inProgress").length > 0 && (
           <>
-            <h3 className="mb-2 text-xl font-semibold">In Progress</h3>
+            <h3 className="my-2 flex items-end gap-2 text-xl font-semibold dark:text-white">
+              Currently Reading
+              <GiBookmarklet className="size-6" />
+            </h3>
             {renderDraggleBookList("inProgress", books, renderBookItem)}
           </>
         )}
         {books.filter((book) => book.status === "backlog").length > 0 && (
           <>
-            <h3 className="mb-2 text-xl font-semibold">Backlog</h3>
+            <h3 className="my-2 flex items-end gap-2 text-xl font-semibold dark:text-white">
+              For Latar
+              <GiBookPile className="size-7" />
+            </h3>
             {renderDraggleBookList("backlog", books, renderBookItem)}
           </>
         )}
       </DragDropContext>
       {books.filter((book) => book.status === "done").length > 0 && (
         <>
-          <h3 className="mb-2 text-xl font-semibold">Done</h3>
+          <h3 className="my-2 flex items-end gap-2 text-xl font-semibold dark:text-white">
+            Done
+            <GiBookshelf className="size-7 pb-0.5" />
+          </h3>
           <div>
             {books
               .filter((book) => book.status === "done")
