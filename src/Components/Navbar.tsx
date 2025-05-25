@@ -20,13 +20,7 @@ export function Navbar() {
               <nav className="flex items-center space-x-1">
                 <ThemeToggle />
                 <a
-                  href="https://www.youtube.com/@m6io"
-                  target="_blank"
-                  className="h-10 w-10 p-2 text-gray-800 hover:text[#ff0000] dark:text-white dark:hover:text-[#ff0000]">
-                  <SiYoutube className="h-full w-full" />
-                </a>
-                <a
-                  href="https://www.github.com/m6io"
+                  href="https://www.github.com/amiraliikh83"
                   target="_blank"
                   className="h-10 w-10 p-2
                                         text-gray-800 hover:text-[#4078c0]
